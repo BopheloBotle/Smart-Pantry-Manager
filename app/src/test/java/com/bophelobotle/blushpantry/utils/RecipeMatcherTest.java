@@ -61,44 +61,40 @@ public class RecipeMatcherTest {
     }
 
     @Test
-    public void suggestionsIncludePartialMatchesAndExplainMissingIngredients() {
-        Recipe recipe = recipe("Egg and Tomato Bowl",
-                ingredient("egg", 2, "piece"),
-                ingredient("tomato", 2, "piece"),
-                ingredient("cheese", 30, "g"));
+    public void excludesRecipeWhenOneOfFiveIngredientsIsMissing() {
+        Recipe recipe = recipe("Five ingredient meal",
+                ingredient("egg", 1, "piece"),
+                ingredient("tomato", 1, "piece"),
+                ingredient("onion", 1, "piece"),
+                ingredient("oil", 10, "ml"),
+                ingredient("salt", 1, "tsp"));
         List<PantryItem> pantry = Arrays.asList(
-                pantry("eggs", 2, "piece"),
-                pantry("tomatoes", 1, "piece"));
-
-        List<Recipe> suggestions = matcher.findSuggestedRecipes(
-                Collections.singletonList(recipe), pantry);
-
-        assertEquals(1, suggestions.size());
-        assertFalse(suggestions.get(0).isSuggestionCanMake());
-        assertEquals(1, suggestions.get(0).getSuggestionAvailableIngredients());
-        assertEquals(3, suggestions.get(0).getSuggestionTotalIngredients());
-        assertEquals(2, suggestions.get(0).getSuggestionMissingIngredients().size());
+                pantry("egg", 2, "piece"),
+                pantry("tomato", 2, "piece"),
+                pantry("onion", 1, "piece"),
+                pantry("oil", 20, "ml"));
+        assertFalse(matcher.canMake(recipe, pantry));
+        assertTrue(matcher.findMakeableRecipes(Collections.singletonList(recipe), pantry).isEmpty());
     }
 
     @Test
-    public void makeableSuggestionsAreRankedBeforePartialMatches() {
+    public void suggestionsListKeepsCompleteRecipesAndDropsPartialOnes() {
         Recipe complete = recipe("Eggs", ingredient("egg", 1, "piece"));
-        Recipe partial = recipe("Egg and Cheese", ingredient("egg", 1, "piece"),
+        Recipe partial = recipe("Egg and Cheese",
+                ingredient("egg", 1, "piece"),
                 ingredient("cheese", 20, "g"));
-        List<Recipe> suggestions = matcher.findSuggestedRecipes(
+        List<Recipe> suggestions = matcher.findMakeableRecipes(
                 Arrays.asList(partial, complete),
                 Collections.singletonList(pantry("egg", 2, "piece")));
 
-        assertEquals(2, suggestions.size());
-        assertTrue(suggestions.get(0).isSuggestionCanMake());
+        assertEquals(1, suggestions.size());
         assertEquals("Eggs", suggestions.get(0).getName());
-        assertFalse(suggestions.get(1).isSuggestionCanMake());
     }
 
     @Test
     public void suggestionsDoNotIncludeRecipesWithNoPantryIngredientOverlap() {
         Recipe recipe = recipe("Pasta", ingredient("pasta", 100, "g"));
-        List<Recipe> suggestions = matcher.findSuggestedRecipes(
+        List<Recipe> suggestions = matcher.findMakeableRecipes(
                 Collections.singletonList(recipe),
                 Collections.singletonList(pantry("rice", 100, "g")));
         assertTrue(suggestions.isEmpty());
