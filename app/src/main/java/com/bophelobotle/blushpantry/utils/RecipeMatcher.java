@@ -5,20 +5,16 @@ import com.bophelobotle.blushpantry.models.Recipe;
 import com.bophelobotle.blushpantry.models.RecipeIngredient;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
- * Matches pantry ingredients to saved recipes.
+ * Decides which recipes the user can cook from the pantry they have right now.
  *
- * findMakeableRecipes() is strict and returns only recipes whose full ingredient
- * quantities are available. findSuggestedRecipes() also returns useful partial
- * matches, ranking recipes the user can make first and then recipes needing the
- * fewest missing ingredients.
+ * A recipe is suggested only when every required ingredient is present in at
+ * least the required quantity. One missing ingredient, a short quantity, or
+ * units that cannot be compared excludes the whole recipe.
  */
 public class RecipeMatcher {
 
@@ -35,89 +31,6 @@ public class RecipeMatcher {
             }
         }
         return matches;
-    }
-
-    /**
-     * Returns recipes related to at least one ingredient in the pantry.
-     * Complete matches appear first. Partial matches show what is missing.
-     */
-    public List<Recipe> findSuggestedRecipes(List<Recipe> recipes, List<PantryItem> pantryItems) {
-        List<Recipe> suggestions = new ArrayList<>();
-        Map<String, List<PantryItem>> pantryIndex = indexPantry(pantryItems);
-
-        if (recipes == null || pantryIndex.isEmpty()) {
-            return suggestions;
-        }
-
-        for (Recipe recipe : recipes) {
-            if (recipe == null || recipe.getIngredients() == null
-                    || recipe.getIngredients().isEmpty()) {
-                continue;
-            }
-
-            int availableCount = 0;
-            int presentCount = 0;
-            List<String> missing = new ArrayList<>();
-
-            for (RecipeIngredient required : recipe.getIngredients()) {
-                if (required == null) {
-                    continue;
-                }
-
-                String key = IngredientNormalizer.normalize(required.getName());
-                List<PantryItem> candidates = pantryIndex.get(key);
-
-                if (key.isEmpty() || candidates == null || candidates.isEmpty()) {
-                    missing.add(formatRequired(required));
-                    continue;
-                }
-
-                presentCount++;
-                double available = sumAvailableInRecipeUnit(candidates, required.getUnit());
-                if (!Double.isNaN(available) && required.getQuantity() > 0
-                        && available + 0.0001 >= required.getQuantity()) {
-                    availableCount++;
-                } else {
-                    missing.add(formatShortage(required, available));
-                }
-            }
-
-            // Only suggest recipes that have a real ingredient-name overlap.
-            // This also allows useful "almost there" suggestions when a pantry
-            // ingredient exists but its quantity is too small.
-            if (presentCount > 0) {
-                recipe.setSuggestionAvailableIngredients(availableCount);
-                recipe.setSuggestionTotalIngredients(recipe.getIngredients().size());
-                recipe.setSuggestionMissingIngredients(missing);
-                recipe.setSuggestionCanMake(missing.isEmpty());
-                suggestions.add(recipe);
-            }
-        }
-
-        // Makeable recipes first; then the recipes with the most covered
-        // ingredients; then the smallest number of missing ingredients.
-        Collections.sort(suggestions, new Comparator<Recipe>() {
-            @Override
-            public int compare(Recipe first, Recipe second) {
-                if (first.isSuggestionCanMake() != second.isSuggestionCanMake()) {
-                    return first.isSuggestionCanMake() ? -1 : 1;
-                }
-                int availableCompare = Integer.compare(
-                        second.getSuggestionAvailableIngredients(),
-                        first.getSuggestionAvailableIngredients());
-                if (availableCompare != 0) {
-                    return availableCompare;
-                }
-                int missingCompare = Integer.compare(
-                        first.getSuggestionMissingIngredients().size(),
-                        second.getSuggestionMissingIngredients().size());
-                if (missingCompare != 0) {
-                    return missingCompare;
-                }
-                return safe(first.getName()).compareToIgnoreCase(safe(second.getName()));
-            }
-        });
-        return suggestions;
     }
 
     public boolean canMake(Recipe recipe, List<PantryItem> pantryItems) {
@@ -166,35 +79,6 @@ public class RecipeMatcher {
             available += converted;
         }
         return convertedAny ? available : Double.NaN;
-    }
-
-    private String formatRequired(RecipeIngredient required) {
-        return safe(required.getName()) + " (" + formatNumber(required.getQuantity())
-                + unitSuffix(required.getUnit()) + ")";
-    }
-
-    private String formatShortage(RecipeIngredient required, double available) {
-        String result = safe(required.getName()) + " (need "
-                + formatNumber(required.getQuantity()) + unitSuffix(required.getUnit());
-        if (!Double.isNaN(available) && available > 0) {
-            result += ", have " + formatNumber(available) + unitSuffix(required.getUnit());
-        }
-        return result + ")";
-    }
-
-    private String unitSuffix(String unit) {
-        return unit == null || unit.trim().isEmpty() ? "" : " " + unit.trim();
-    }
-
-    private String formatNumber(double value) {
-        if (Math.abs(value - Math.round(value)) < 0.0001) {
-            return String.valueOf(Math.round(value));
-        }
-        return String.format(Locale.US, "%.2f", value);
-    }
-
-    private String safe(String value) {
-        return value == null ? "" : value;
     }
 
     private Map<String, List<PantryItem>> indexPantry(List<PantryItem> pantryItems) {
