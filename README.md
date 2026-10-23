@@ -61,7 +61,7 @@ To reseed recipes during marking, uninstall the app or clear its storage, then i
 
 Normalization is not substring matching. `onion` does not match `spring onion`.
 
-There is no "Almost There" list, so close matches cannot leak into suggestions.
+Suggested Recipes calls `findMakeableRecipes()`. A recipe missing even one ingredient stays off that list. If nothing qualifies, the screen says “No recipes match your pantry yet. Add more ingredients.” There is no “Almost There” list.
 
 ## Android Studio setup
 
