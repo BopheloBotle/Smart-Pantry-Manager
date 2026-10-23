@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="blush_pink">#F4C2C2</color>
+    <color name="blush_deep">#E8A0B0</color>
+    <color name="blush_accent">#C75B7A</color>
+    <color name="blush_dark">#8A3A52</color>
+    <color name="cream">#FFF8F5</color>
+    <color name="card_white">#FFFFFF</color>
+    <color name="text_primary">#3D2C2E</color>
+    <color name="text_secondary">#7A5A60</color>
+    <color name="outline_soft">#F0D4DA</color>
+    <color name="success_mint">#6FAF9A</color>
+    <color name="warning_peach">#E09A6A</color>
+    <color name="error_rose">#C45C6A</color>
+    <color name="nav_unselected">#B08993</color>
+</resources>
