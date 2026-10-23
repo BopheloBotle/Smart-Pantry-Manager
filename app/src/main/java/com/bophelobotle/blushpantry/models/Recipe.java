@@ -72,44 +72,6 @@ public class Recipe {
         this.instructions = instructions;
     }
 
-    // Runtime-only metadata used by the suggested-recipes screen.
-    private int suggestionAvailableIngredients;
-    private int suggestionTotalIngredients;
-    private List<String> suggestionMissingIngredients = new ArrayList<>();
-    private boolean suggestionCanMake;
-
-    public int getSuggestionAvailableIngredients() {
-        return suggestionAvailableIngredients;
-    }
-
-    public void setSuggestionAvailableIngredients(int value) {
-        this.suggestionAvailableIngredients = value;
-    }
-
-    public int getSuggestionTotalIngredients() {
-        return suggestionTotalIngredients;
-    }
-
-    public void setSuggestionTotalIngredients(int value) {
-        this.suggestionTotalIngredients = value;
-    }
-
-    public List<String> getSuggestionMissingIngredients() {
-        return suggestionMissingIngredients;
-    }
-
-    public void setSuggestionMissingIngredients(List<String> value) {
-        this.suggestionMissingIngredients = value == null ? new ArrayList<>() : value;
-    }
-
-    public boolean isSuggestionCanMake() {
-        return suggestionCanMake;
-    }
-
-    public void setSuggestionCanMake(boolean value) {
-        this.suggestionCanMake = value;
-    }
-
     public List<RecipeIngredient> getIngredients() {
         return ingredients;
     }

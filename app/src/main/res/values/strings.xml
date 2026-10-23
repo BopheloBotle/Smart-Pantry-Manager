@@ -44,14 +44,10 @@
     <string name="missing_item">That pantry item could not be found.</string>
 
     <string name="recipes_title">Suggested recipes</string>
-    <string name="recipes_subtitle">Recipes based on ingredients you already have. Ready-to-cook ideas appear first.</string>
-    <string name="no_recipe_match">No recipes use your pantry ingredients yet. Add more pantry items to discover more ideas.</string>
-    <string name="no_pantry_for_recipes">Your pantry is empty. Add ingredients first and we will find recipes that use them.</string>
-    <string name="no_recipe_uses_pantry">None of the saved recipes use your current pantry ingredients yet. Add more ingredients to see more suggestions.</string>
+    <string name="recipes_subtitle">A recipe is shown only when you already have every ingredient it needs, in at least the required amount.</string>
+    <string name="no_recipe_match">No recipes match your pantry yet. Add more ingredients.</string>
     <string name="recipe_total_time">Total %1$d min</string>
     <string name="recipe_ready_to_make">You have everything needed to make this recipe.</string>
-    <string name="recipe_ingredient_progress">You have enough of %1$d of %2$d ingredients.</string>
-    <string name="recipe_missing_label">Still needed:</string>
     <string name="prep_time">Prep %1$d min</string>
     <string name="cook_time">Cook %1$d min</string>
     <string name="ingredients_heading">Ingredients</string>
@@ -65,7 +61,7 @@
     <string name="unit_metric">Metric (g, ml)</string>
     <string name="unit_imperial">Imperial (oz, cups)</string>
     <string name="about_title">About</string>
-    <string name="about_body">Smart Pantry Manager helps you cook with what you already have. Suggested recipes are ranked using the ingredients and quantities in your pantry. Recipes you can make appear first, followed by partial matches that show what is still needed. The app works fully offline using SQLite on this device.</string>
+    <string name="about_body">Smart Pantry Manager helps you cook with what you already have. A recipe is suggested only when every required ingredient is in your pantry in at least the required quantity. Partial matches are not shown. The app works fully offline using SQLite on this device.</string>
     <string name="settings_saved">Settings saved.</string>
 
     <string-array name="units">

@@ -51,29 +51,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.Holder> {
         holder.time.setText(holder.itemView.getContext()
                 .getString(R.string.recipe_total_time,
                         recipe.getPrepMinutes() + recipe.getCookMinutes()));
-
-        if (recipe.isSuggestionCanMake()) {
-            holder.match.setText(R.string.recipe_ready_to_make);
-        } else {
-            StringBuilder details = new StringBuilder();
-            details.append(holder.itemView.getContext().getString(
-                    R.string.recipe_ingredient_progress,
-                    recipe.getSuggestionAvailableIngredients(),
-                    recipe.getSuggestionTotalIngredients()));
-            List<String> missing = recipe.getSuggestionMissingIngredients();
-            if (missing != null && !missing.isEmpty()) {
-                details.append("\n")
-                        .append(holder.itemView.getContext().getString(R.string.recipe_missing_label))
-                        .append(" ");
-                for (int i = 0; i < missing.size(); i++) {
-                    if (i > 0) {
-                        details.append(", ");
-                    }
-                    details.append(missing.get(i));
-                }
-            }
-            holder.match.setText(details.toString());
-        }
+        holder.match.setText(R.string.recipe_ready_to_make);
 
         holder.itemView.setOnClickListener(v -> listener.onRecipeClicked(recipe));
     }
