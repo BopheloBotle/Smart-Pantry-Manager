@@ -160,10 +160,3 @@ app/src/main/java/com/bophelobotle/blushpantry/
   utils/UnitConverter.java
   utils/IngredientNormalizer.java
 ```
-
-## Assignment notes
-
-- No Google Maps, location, or store-discovery features
-- No Kotlin
-- No extra backend
-- Do not claim a Gradle Android build passed unless `./start.sh` or Android Studio actually compiled the app on a machine that has the SDK
